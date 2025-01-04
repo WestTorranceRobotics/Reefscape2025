@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "shengchen.vscode-checkstyle",
+        "vscjava.vscode-java-pack",
+        "naco-siren.gradle-language"
+    ]
+}
