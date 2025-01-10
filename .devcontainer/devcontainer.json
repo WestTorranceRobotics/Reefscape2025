@@ -6,10 +6,11 @@
   "customizations": {
     "vscode": {
       "extensions": [
-		      "/opt/vscode-wpilib-2025.1.1.vsix",
-		      "vscjava.vscode-java-pack",
-		      "vscjava.vscode-gradle"
-	      ]
-    }
+	      "/opt/vscode-wpilib-2025.1.1.vsix",
+	      "vscjava.vscode-java-pack",
+	      "vscjava.vscode-gradle",
+				"shengchen.checkstyle-for-java"
+	  	]
+		}
   }
 }
