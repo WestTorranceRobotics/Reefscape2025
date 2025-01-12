@@ -17,7 +17,7 @@ public class ExampleSubsystemTest {
    * Insert code that runs before each test here.
    */
   @BeforeEach
-  public void ExampleSubsystemTest() {
+  public void setup() {
     this.mExampleSubsystem = new ExampleSubsystem();
   }
 
