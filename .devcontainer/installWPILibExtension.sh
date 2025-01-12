@@ -5,4 +5,4 @@ WPILIB_VERSION=$(./gradlew dependencyInsight --dependency edu.wpi.first | grep -
 
 cd /opt 
 
-wget -O vscode-wpilib.vsix "https://github.com/wpilibsuite/vscode-wpilib/releases/latest/download/vscode-wpilib-${WPILIB_VERSION}.vsix"
+wget -O vscode-wpilib.vsix "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${WPILIB_VERSION}/vscode-wpilib-${WPILIB_VERSION}.vsix"
