@@ -20,7 +20,7 @@ public final class Main {
    * If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-
+    System.out.println("Hello 2!");
 
     System.out.println("Hello!");
   }
