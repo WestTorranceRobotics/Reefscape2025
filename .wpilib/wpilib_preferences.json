@@ -3,4 +3,7 @@
     "currentLanguage": "java",
     "projectYear": "2025",
     "teamNumber": 5124
+
+    System.out.println("I need a lot of help:)")
+
 }
