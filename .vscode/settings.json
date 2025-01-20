@@ -18,7 +18,9 @@
 		{
 			"name": "WPIlibUnitTests",
 			"workingDirectory": "${workspaceFolder}/build/jni/release",
-			"vmargs": ["-Djava.library.path=${workspaceFolder}/build/jni/release"],
+			"vmargs": [
+				"-Djava.library.path=${workspaceFolder}/build/jni/release"
+			],
 			"env": {
 				"LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
 				"DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
@@ -57,13 +59,13 @@
 		"edu.wpi.first.math.**.proto.*",
 		"edu.wpi.first.math.**.struct.*"
 	],
-
 	"java.format.settings.url": "eclipse-formatter.xml",
 	"editor.formatOnSave": true,
 	"[java]": {
 		"editor.detectIndentation": false
 	},
-	"java.checkstyle.configuration": "${workspaceFolder}/config/checkstyle/checkstyle.xml",
+	"java.checkstyle.configuration": "${workspaceFolder}\\config\\checkstyle\\checkstyle.xml",
 	"java.checkstyle.version": "10.21.1",
-	"editor.tabSize": 2
+	"editor.tabSize": 2,
+	"java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
 }
