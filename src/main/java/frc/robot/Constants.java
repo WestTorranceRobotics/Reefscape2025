@@ -16,5 +16,17 @@ package frc.robot;
 public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
+        public static final float ReefL1_Cm = 46;
+        public static final float ReefL2_Cm = 81;
+        public static final float ReefL3_Cm = 121;
+        public static final float ReefL3_Cm = 183;
+
+        public static final float AlgaeHeight1_Cm = 81;
+        public static final float AlgaeHeight2_Cm = 121;
     }
+
+    
+
+    }
+
 }
