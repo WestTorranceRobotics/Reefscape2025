@@ -16,12 +16,12 @@ package frc.robot;
 public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
-        public static final float motorTickCount = 2000; 
-/*      Motor tick count to reach designated reef level for auto period 
+        public static final float elevatorTicks = 2000; 
+/*      Elevator motor tick count to reach designated reef level for auto period 
         (current value is a placeholder)
  */ 
-        public static final float intakeDistance = 5; 
-/*      Intake distance for auto period (current value is a placeholder)  
+        public static final float intakeTicks = 1000; 
+/*      Intake motor tick count to angle coral for auto period (current value is a placeholder)  
 */
 
 
