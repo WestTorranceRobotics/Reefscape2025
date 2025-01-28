@@ -19,5 +19,15 @@ public final class Constants {
    */
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    /*
+     * Elevator motor tick count to reach designated reef level for auto period (current value is a
+     * placeholder)
+     */
+    public static final float elevatorTicks = 2000;
+    /*
+     * Intake motor tick count to angle coral for auto period (current value is a placeholder)
+     */
+    public static final float intakeTicks = 1000;
+    
   }
 }
