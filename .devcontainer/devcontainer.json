@@ -1,0 +1,15 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "postCreateCommand": "bash .devcontainer/installWPILibExtension.sh",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "/opt/vscode-wpilib.vsix",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "shengchen.checkstyle-for-java"
+      ]
+    }
+  }
+}

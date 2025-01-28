@@ -14,19 +14,30 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-        public static final float ReefL1_Cm = 46;
-        public static final float ReefL2_Cm = 81;
-        public static final float ReefL3_Cm = 121;
-        public static final float ReefL3_Cm = 183;
-
-        public static final float AlgaeHeight1_Cm = 81;
-        public static final float AlgaeHeight2_Cm = 121;
-    }
-
+  /**
+   * TODO: Add documentation.
+   */
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+    /*
+     * Elevator motor tick count to reach designated reef level for auto period (current value is a
+     * placeholder)
+     */
+    public static final float elevatorTicks = 2000;
+    /*
+     * Intake motor tick count to angle coral for auto period (current value is a placeholder)
+     */
+    public static final float intakeTicks = 1000;
     
+    
+    public static final int kDriverControllerPort = 0;
+    public static final float ReefL1_Cm = 46;
+    public static final float ReefL2_Cm = 81;
+    public static final float ReefL3_Cm = 121;
+    public static final float ReefL3_Cm = 183;
 
-    }
-
+    public static final float AlgaeHeight1_Cm = 81;
+    public static final float AlgaeHeight2_Cm = 121;
+    
+  }
 }
