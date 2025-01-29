@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.YagslSwerve;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
@@ -18,24 +19,21 @@ import swervelib.SwerveInputStream;
 /**
  * Uses {@link SwerveInputStream} and {@link YagslSwerve#driveFieldOriented()} to drive.
  */
-public class DirectAngleDrive extends Command {
+public class RelativeAngleDrive extends Command {
   private final YagslSwerve swerve;
   private final DoubleSupplier vX;
   private final DoubleSupplier vY;
   private final DoubleSupplier headingHorizontal;
-  private final DoubleSupplier headingVertical;
-  // private boolean initRotation = false;
 
   /**
-   * Creates a new AbsoluteDrive.
+   * Creates a new RelativeDrive.
    */
-  public DirectAngleDrive(YagslSwerve swerve, DoubleSupplier vX, DoubleSupplier vY,
-      DoubleSupplier headingHorizontal, DoubleSupplier headingVertical) {
+  public RelativeAngleDrive(YagslSwerve swerve, DoubleSupplier vX, DoubleSupplier vY,
+      DoubleSupplier headingHorizontal) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
     this.headingHorizontal = headingHorizontal;
-    this.headingVertical = headingVertical;
 
     addRequirements(swerve);
   }
@@ -63,16 +61,17 @@ public class DirectAngleDrive extends Command {
     // and this is the one that I liked best so i'm running with this one rn.
     // se above for one i was too lazy to do... i'm not sure if the velocity limiting math is
     // handled or not by SwerveInputStream. so that might be better but idk the docs don't say
-    SwerveInputStream driveDirectAngle = SwerveInputStream.of(
-        swerve.getSwerve(),
+    SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerve.getSwerve(),
         () -> vX.getAsDouble() * -1,
         () -> vY.getAsDouble() * -1)
-        .withControllerHeadingAxis(headingVertical, headingHorizontal)
-        .deadband(0.2)
-        .scaleTranslation(0.8);
-    // .headingWhile(true);
+        .withControllerRotationAxis(() -> headingHorizontal.getAsDouble())
+        .deadband(OperatorConstants.DEADBAND)
+        .scaleTranslation(0.5)
+        .allianceRelativeControl(true);
 
-    swerve.driveFieldOriented(driveDirectAngle);
+
+    swerve.driveFieldOriented(driveAngularVelocity);
+    // swerve.drive(driveAngularVelocity.get());
   }
 
   @Override
