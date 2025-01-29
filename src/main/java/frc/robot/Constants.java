@@ -25,6 +25,7 @@ public final class Constants {
    */
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final double DEADBAND = 0.2;
   }
 
   /**
@@ -35,29 +36,35 @@ public final class Constants {
     public static final File SWERVE_FILE_PATH = new File(Filesystem.getDeployDirectory(), "swerve");
 
     /**
-     * Motor, encoder, and gyro ids.
+     * Motor, encoder, and gyro ids. Order goes
+     * <ol>
+     * <li>Back right</li>
+     * <li>Back left</li>
+     * <li>Front right</li>
+     * <li>Front left</li>
+     * </ol>
      */
     public static class SwerveIds {
       // TalonFX drive motor controllers
-      public static final int leftFrontDriveId = 1;
-      public static final int leftBackDriveId = 2;
-      public static final int rightBackDriveId = 3;
-      public static final int rightFrontDriveId = 4;
+      public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 21;
+      public static final int BACK_LEFT_DRIVE_MOTOR_ID = 22;
+      public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 23;
+      public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 24;
 
       // CANCoders (encoders) for the TalonFX drive motors
-      public static final int leftBackCanCoderId = 5;
-      public static final int leftFrontCanCoderId = 6;
-      public static final int rightFrontCanCoderId = 7;
-      public static final int rightBackCanCoderId = 8;
+      public static final int BACK_RIGHT_CANCODER_ID = 11;
+      public static final int BACK_LEFT_CANCODER_ID = 12;
+      public static final int FRONT_RIGHT_CANCODER_ID = 13;
+      public static final int FRONT_LEFT_CANCODER_ID = 14;
 
       // Pigeon 2 gyro
-      public static final int pigeon2GyroId = 9;
+      public static final int PIGEON_2_GYRO_ID = 9;
 
-      // SwerveMax angle motor controller IDs
-      public static final int leftFrontAngleId = 11;
-      public static final int leftBackAngleId = 12;
-      public static final int rightBackAngleId = 13;
-      public static final int rightFrontAngleId = 14;
+      // SparkMAX angle motor controller IDs
+      public static final int BACK_RIGHT_ANGLE_MOTOR_ID = 11;
+      public static final int BACK_LEFT_ANGLE_MOTOR_ID = 12;
+      public static final int FRONT_RIGHT_ANGLE_MOTOR_ID = 13;
+      public static final int FRONT_LEFT_ANGLE_MOTOR_ID = 14;
     }
   }
 

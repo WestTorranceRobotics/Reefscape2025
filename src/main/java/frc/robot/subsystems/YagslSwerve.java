@@ -10,11 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PathPlannerConstants;
@@ -22,12 +18,8 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -43,8 +35,8 @@ public class YagslSwerve extends SubsystemBase {
   // private static YagslSwerve instance;
   private SwerveDrive swerve;
 
-  private final StructPublisher<Pose2d> posePublisher =
-      NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+  // private final StructPublisher<Pose2d> posePublisher =
+  // NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
 
   // private final ShuffleboardTab mapleSimTab = Shuffleboard.getTab("mapleSim");
 
@@ -68,6 +60,7 @@ public class YagslSwerve extends SubsystemBase {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerve.setHeadingCorrection(false);
       swerve.setCosineCompensator(false);
+      // swerve.setAutoCenteringModules(true);
 
       configurePathPlanner();
 
@@ -214,6 +207,7 @@ public class YagslSwerve extends SubsystemBase {
     swerve.drive(velocity);
   }
 
+
   /**
    * Secondary method of controlling the drive base, adjusted for field oriented use.
    * 
@@ -329,28 +323,6 @@ public class YagslSwerve extends SubsystemBase {
     }
   }
 
-  // public double[] getEncoders() {
-  // // var a = swerve.getSwerveModulePoses(getPose());
-  // var modules = swerve.getModules();
-  // System.out.println(modules);
-
-  // double[] encoderValues = {0, 0, 0, 0};
-
-  // for (int i = 0; i < modules.length; i++) {
-  // var encoder = modules[i].getAbsoluteEncoder();
-  // System.out.println(modules);
-
-  // try {
-  // var position = encoder.getAbsolutePosition();
-  // encoderValues[i] = position;
-  // } catch (Error e) {
-  // System.out.println("e");
-  // }
-  // }
-
-  // return encoderValues;
-  // }
-
   @Override
   public void periodic() {
     if (Robot.isReal()) {
@@ -361,6 +333,6 @@ public class YagslSwerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    posePublisher.set(getPose());
+    // posePublisher.set(getPose());
   }
 }
