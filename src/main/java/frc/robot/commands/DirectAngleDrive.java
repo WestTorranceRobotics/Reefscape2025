@@ -65,12 +65,14 @@ public class DirectAngleDrive extends Command {
     // handled or not by SwerveInputStream. so that might be better but idk the docs don't say
     SwerveInputStream driveDirectAngle = SwerveInputStream.of(
         swerve.getSwerve(),
-        () -> vX.getAsDouble() * -1,
-        () -> vY.getAsDouble() * -1)
-        .withControllerHeadingAxis(headingVertical, headingHorizontal)
+        () -> -vY.getAsDouble(),
+        () -> -vX.getAsDouble())
+        .withControllerHeadingAxis(
+            () -> -headingHorizontal.getAsDouble(),
+            () -> -headingVertical.getAsDouble())
         .deadband(0.2)
-        .scaleTranslation(0.8);
-    // .headingWhile(true);
+        .scaleTranslation(0.8)
+        .headingWhile(true);
 
     swerve.driveFieldOriented(driveDirectAngle);
   }
