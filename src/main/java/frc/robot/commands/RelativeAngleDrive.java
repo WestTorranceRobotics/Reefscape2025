@@ -62,9 +62,9 @@ public class RelativeAngleDrive extends Command {
     // se above for one i was too lazy to do... i'm not sure if the velocity limiting math is
     // handled or not by SwerveInputStream. so that might be better but idk the docs don't say
     SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerve.getSwerve(),
-        () -> vX.getAsDouble() * -1,
-        () -> vY.getAsDouble() * -1)
-        .withControllerRotationAxis(() -> headingHorizontal.getAsDouble())
+        () -> vY.getAsDouble(),
+        () -> vX.getAsDouble())
+        .withControllerRotationAxis(() -> -headingHorizontal.getAsDouble())
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.5)
         .allianceRelativeControl(true);

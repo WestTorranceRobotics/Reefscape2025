@@ -30,19 +30,19 @@ public class RobotContainer {
   private final YagslSwerve swerve = new YagslSwerve(SwerveConstants.SWERVE_FILE_PATH);
 
   // COMMANDS
-  // private final DirectAngleDrive directAngleDrive =
-  // new DirectAngleDrive(
-  // swerve,
-  // driverController::getLeftX,
-  // driverController::getLeftY,
-  // driverController::getRightX,
-  // driverController::getRightY);
+  private final DirectAngleDrive directAngleDrive =
+      new DirectAngleDrive(
+          swerve,
+          driverController::getLeftX,
+          driverController::getLeftY,
+          driverController::getRightX,
+          driverController::getRightY);
 
-  private final RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
-      swerve,
-      () -> driverController.getLeftX(),
-      () -> driverController.getLeftY(),
-      () -> driverController.getRightX());
+  // private final RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
+  // swerve,
+  // () -> driverController.getLeftX(),
+  // () -> driverController.getLeftY(),
+  // () -> driverController.getRightX());
 
   // TODO: add keyboard simulation turning with one axis
 
@@ -53,7 +53,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    swerve.setDefaultCommand(relativeAngleDrive);
+    swerve.setDefaultCommand(directAngleDrive);
     configureBindings();
   }
 
