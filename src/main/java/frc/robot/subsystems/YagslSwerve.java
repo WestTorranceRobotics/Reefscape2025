@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -60,10 +62,8 @@ public class YagslSwerve extends SubsystemBase {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerve.setHeadingCorrection(false);
       swerve.setCosineCompensator(false);
-
-      swerve.getModuleMap().get("backright").getDriveMotor().setCurrentLimit(10);
-
-      // swerve.setAutoCenteringModules(true);
+      swerve.setAutoCenteringModules(true);
+      // centerModules();
 
       configurePathPlanner();
 
@@ -79,7 +79,8 @@ public class YagslSwerve extends SubsystemBase {
 
   /**
    * PathPlanner setup from
-   * https://pathplanner.dev/pplib-getting-started.html#install-pathplannerlib.
+   * <a href="https://pathplanner.dev/pplib-getting-started.html#install-pathplannerlib">the
+   * docs.</a>.
    */
   private void configurePathPlanner() {
     try {
@@ -231,13 +232,13 @@ public class YagslSwerve extends SubsystemBase {
   }
 
   /**
-   * Commands robot to continously run {@link YagslSwerve#driveFieldOriented}.
+   * Commands robot to continuously run {@link YagslSwerve#driveFieldOriented}.
    * 
    * @param translationX Joystick input for the robot to move in the X direction.
    * @param translationY Joystick input for the robot to move in the Y direction.
    * @param headingX Joystick input which controls the angle of the robot.
    * @param headingY Joystick input which controls the angle of the robot.
-   * @return A continous {@link Command} driving the robot
+   * @return A continuous {@link Command} driving the robot
    */
   public Command driveCommand(
       DoubleSupplier translationX,
@@ -254,7 +255,7 @@ public class YagslSwerve extends SubsystemBase {
               scaledInputs.getY(),
               headingX.getAsDouble(),
               headingY.getAsDouble(),
-              getHeading().getRadians(),
+              swerve.getOdometryHeading().getRadians(),
               SwerveConstants.MAX_SPEED));
     });
   }
@@ -264,6 +265,29 @@ public class YagslSwerve extends SubsystemBase {
    */
   public void stop() {
     swerve.drive(new ChassisSpeeds(0, 0, 0));
+  }
+
+  public void centerModules() {
+    // for (var module : swerve.getModules()) {
+    // module.setDesiredState(new SwerveModuleState(0, new Rotation2d(0)), false, 0);
+    // }
+
+    SwerveModuleState[] states = {null, null, null, null};
+    for (int i = 0; i < 4; i++) {
+      states[i] = new SwerveModuleState(0, new Rotation2d(0));
+    }
+
+    swerve.setModuleStates(states, false);
+
+    // idk lol
+    // swerve.drive(new Translation2d(0, new Rotation2d(0)), 0, false, false);
+  }
+
+  public Command centerModulesCommand() {
+    return runOnce(() -> {
+      centerModules();
+      System.out.println("Centering modules");
+    });
   }
 
   /**
