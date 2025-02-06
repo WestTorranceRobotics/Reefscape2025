@@ -43,30 +43,12 @@ public class RelativeAngleDrive extends Command {
 
   @Override
   public void execute() {
-    // ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(),
-    // headingHorizontal.getAsDouble(), headingVertical.getAsDouble());
-
-    // Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
-    // translation =
-    // SwerveMath.limitVelocity(
-    // translation,
-    // swerve.getFieldVelocity(),
-    // swerve.getPose(),
-    // 0,
-    // 0,
-    // null,
-    // null);
-
-    // The tech gets better every day. There's like 5 different ways to make the swerve go
-    // and this is the one that I liked best so i'm running with this one rn.
-    // se above for one i was too lazy to do... i'm not sure if the velocity limiting math is
-    // handled or not by SwerveInputStream. so that might be better but idk the docs don't say
     SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerve.getSwerve(),
         () -> vY.getAsDouble(),
         () -> vX.getAsDouble())
         .withControllerRotationAxis(() -> -headingHorizontal.getAsDouble())
         .deadband(OperatorConstants.DEADBAND)
-        .scaleTranslation(0.5)
+        .scaleTranslation(0.3)
         .allianceRelativeControl(true);
 
 
