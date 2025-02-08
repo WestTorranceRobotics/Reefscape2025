@@ -24,25 +24,23 @@ public class RobotContainer {
   private final CommandPS4Controller driverController =
       new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
 
-  private final PS4Controller driverHud = driverController.getHID();
-
   // SUBSYSTEMS
   private final YagslSwerve swerve = new YagslSwerve(SwerveConstants.SWERVE_FILE_PATH);
 
   // COMMANDS
-  private final DirectAngleDrive directAngleDrive =
-      new DirectAngleDrive(
-          swerve,
-          driverController::getLeftX,
-          driverController::getLeftY,
-          driverController::getRightX,
-          driverController::getRightY);
-
-  // private final RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
+  // private final DirectAngleDrive directAngleDrive =
+  // new DirectAngleDrive(
   // swerve,
-  // () -> driverController.getLeftX(),
-  // () -> driverController.getLeftY(),
-  // () -> driverController.getRightX());
+  // driverController::getLeftX,
+  // driverController::getLeftY,
+  // driverController::getRightX,
+  // driverController::getRightY);
+
+  private final RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
+      swerve,
+      () -> driverController.getLeftX(),
+      () -> driverController.getLeftY(),
+      () -> driverController.getRightX());
 
   // TODO: add keyboard simulation turning with one axis
 
@@ -53,7 +51,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    swerve.setDefaultCommand(directAngleDrive);
+    swerve.setDefaultCommand(relativeAngleDrive);
     configureBindings();
   }
 

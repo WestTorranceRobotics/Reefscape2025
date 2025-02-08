@@ -62,6 +62,7 @@ public class YagslSwerve extends SubsystemBase {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerve.setHeadingCorrection(false);
       swerve.setCosineCompensator(false);
+      swerve.pushOffsetsToEncoders();
       swerve.setAutoCenteringModules(true);
       // centerModules();
 
