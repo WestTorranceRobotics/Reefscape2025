@@ -5,11 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -21,10 +22,12 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem mExampleSubsystem = new ExampleSubsystem();
+  private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
 
+  // Exchanged "CommandXboxController" with "CommandPS4Controller."
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController mDriverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandPS4Controller mDriverController =
+      new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -47,10 +50,16 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(mExampleSubsystem::exampleCondition).onTrue(new ExampleCommand(mExampleSubsystem));
 
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    mDriverController.b().whileTrue(mExampleSubsystem.exampleMethodCommand());
+    mDriverController.circle().whileTrue(mExampleSubsystem.exampleMethodCommand());
+
+    mDriverController.triangle().whileTrue(mElevatorSubsystem.reachL1Command());
+    mDriverController.circle().whileTrue(mElevatorSubsystem.reachL2Command());
+    mDriverController.cross().whileTrue(mElevatorSubsystem.reachL3Command());
+    mDriverController.square().whileTrue(mElevatorSubsystem.reachL4Command());
   }
 
   /**
