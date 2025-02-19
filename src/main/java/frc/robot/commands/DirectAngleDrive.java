@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.YagslSwerve;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
@@ -65,13 +66,14 @@ public class DirectAngleDrive extends Command {
     // handled or not by SwerveInputStream. so that might be better but idk the docs don't say
     SwerveInputStream driveDirectAngle = SwerveInputStream.of(
         swerve.getSwerve(),
-        () -> -vY.getAsDouble(),
-        () -> -vX.getAsDouble())
+        () -> -vY
+            .getAsDouble(), // I have a sneaky guess that the modules are flipped front-to-back
+        () -> -vX.getAsDouble()) // because inverting everything like this feels weird to me
         .withControllerHeadingAxis(
             () -> -headingHorizontal.getAsDouble(),
             () -> -headingVertical.getAsDouble())
-        .deadband(0.2)
-        .scaleTranslation(0.8)
+        .deadband(OperatorConstants.DEADBAND)
+        .scaleTranslation(0.3) // 0.8 typically
         .headingWhile(true);
 
     swerve.driveFieldOriented(driveDirectAngle);

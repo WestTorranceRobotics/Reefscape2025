@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -15,7 +16,6 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.DirectAngleDrive;
 import frc.robot.commands.RelativeAngleDrive;
 import frc.robot.subsystems.YagslSwerve;
-
 
 /**
  * Container for the entire robot.
@@ -28,23 +28,28 @@ public class RobotContainer {
   private final YagslSwerve swerve = new YagslSwerve(SwerveConstants.SWERVE_FILE_PATH);
 
   // COMMANDS
-  // private final DirectAngleDrive directAngleDrive =
-  // new DirectAngleDrive(
-  // swerve,
-  // driverController::getLeftX,
-  // driverController::getLeftY,
-  // driverController::getRightX,
-  // driverController::getRightY);
 
-  private final RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
+
+  private final DirectAngleDrive directAngleDrive =
+      new DirectAngleDrive(
+          swerve,
+          driverController::getLeftX,
+          driverController::getLeftY,
+          driverController::getRightX,
+          driverController::getRightY);
+
+  RelativeAngleDrive relativeAngleDrive = new RelativeAngleDrive(
       swerve,
       () -> driverController.getLeftX(),
       () -> driverController.getLeftY(),
       () -> driverController.getRightX());
 
-  // TODO: add keyboard simulation turning with one axis
 
-
+  // Command driveFieldOrientedDirectAngle = swerve.driveCommand(
+  // () -> MathUtil.applyDeadband(-driverController.getLeftY(), 0.08),
+  // () -> MathUtil.applyDeadband(-driverController.getLeftX(), 0.08),
+  // () -> driverController.getRightX(),
+  // () -> driverController.getRightY());
 
   /**
    * Creates a new Robot.
@@ -56,7 +61,10 @@ public class RobotContainer {
   }
 
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    // driverHud.button(1, null)
+    // driverController.circle().onTrue(swerve.centerModulesCommand());
+  }
 
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("New Auto");
