@@ -4,13 +4,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.swerve.SwerveJoystickCommand;
+import frc.robot.subsystems.swerve.SwerveDriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,19 +22,24 @@ import frc.robot.subsystems.ExampleSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem mExampleSubsystem = new ExampleSubsystem();
+  // The robot's subsystems and commands are defined here.
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController mDriverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  CommandPS4Controller driveController = new CommandPS4Controller(0);
+
+  private Pigeon2 gyro = new Pigeon2(9);
+  private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(driveController::getLeftY,
+        driveController::getLeftX, driveController::getRightX, swerveSubsystem));
     // Configure the trigger bindings
     configureBindings();
+    initShuffleboard();
   }
 
   /**
@@ -44,13 +52,53 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
+
+    driveController.R2().onTrue(Commands.runOnce(() -> {
+      gyro.setYaw(0);
+      driveController.setRumble(RumbleType.kBothRumble, 0);
+
+    }));
+
+    // driveAbutton.whileTrue(new ArmPercentCommand(arm, 0.75, false));
+    // driveBbutton.whileTrue(new ArmPercentCommand(arm, -0.75, false));
+    // driveAbutton.whileTrue(new IndexerPercentCommand(indexer, -0.2));
+    // driveBbutton.whileTrue(new IndexerPercentCommand(indexer, 0.2));
+
+    // driveXbutton.whileTrue(new WristPercentCommand(wrist, 0.1, false));
+    // driveYbutton.whileTrue(new WristPercentCommand(wrist, -0.1, false));
+
+    // driveLeftTriggerButton.whileTrue(new IntakePercentCommand(intake, 0.2));
+    // driveRightTriggerButton.whileTrue(new IntakePercentCommand(intake, -0.2));
+
+    // // driveAbutton.whileTrue(new IntakePercentCommand(intake, 0.5));
+    // // driveBbutton.whileTrue(new IntakePercentCommand(intake, -0.5));
+
+    // driveLeftBumperButton.whileTrue(new shooterPercentCommand(shooter, 1.0));
+    // driveRightBumperButton.whileTrue(new shooterPercentCommand(shooter, -1.0));
+
+    // // driverUpPOVButton.whileTrue(new ArmTargetPositionManual(arm, 31));
+    // // driverDownPOVButton.whileTrue(new WristTargetPositionManual(wrist, -3));
+
+    // driverDownPOVButton.whileTrue(new NeutralPositionCommand(arm, wrist,
+    // intake));
+    // driverRightPOVButton.whileTrue(new GroundIntakeCommand(arm, intake, wrist));
+    // driverLeftPOVButton.onTrue(new ShooterFeedingCommand(arm, intake, wrist,
+    // shooter));
+    // driverUpPOVButton.onTrue(new AmpScoringCommand(arm, wrist, intake));
+
+    // // driverLeftPOVButton.onTrue(new intakeControlledCommand(intake, 2400));
+
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(mExampleSubsystem::exampleCondition).onTrue(new ExampleCommand(mExampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    mDriverController.b().whileTrue(mExampleSubsystem.exampleMethodCommand());
+
+  }
+
+  public final void initShuffleboard() {
+    swerveSubsystem.initModuleShuffleboard(1);
+    swerveSubsystem.initMainShuffleboard(1);
   }
 
   /**
@@ -59,7 +107,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return new PathPlannerAuto("New Auto");
+
     // An example command will be run in autonomous
-    return Autos.exampleAuto(mExampleSubsystem);
+    // return null;
   }
 }
