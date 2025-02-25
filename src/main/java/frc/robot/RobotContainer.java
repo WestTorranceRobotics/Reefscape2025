@@ -9,10 +9,14 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.swerve.SwerveDriveJoystickCommand;
 import frc.robot.commands.swerve.SwerveJoystickCommand;
+import frc.robot.subsystems.swerve.MapleSimSwerveDrive;
+import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDriveTrain;
 
 /**
@@ -25,21 +29,32 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here.
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandPS4Controller driveController = new CommandPS4Controller(0);
+  CommandPS4Controller driveController = new CommandPS4Controller(1);
+  CommandJoystick joystick = new CommandJoystick(0);
 
   private Pigeon2 gyro = new Pigeon2(9);
-  private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
+  private SwerveDriveTrain swerveSubsystem;
+  private SwerveDrive swerveDrive;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
 
-    swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(driveController::getLeftY,
-        driveController::getLeftX, driveController::getRightX, swerveSubsystem));
+    if (Robot.isReal()) {
+      this.swerveSubsystem = new SwerveDriveTrain(gyro);
+      swerveSubsystem.setDefaultCommand(
+          new SwerveJoystickCommand(driveController::getLeftY, driveController::getLeftX,
+              driveController::getRightX, swerveSubsystem));
+      initShuffleboard();
+    } else {
+      this.swerveDrive = new MapleSimSwerveDrive();
+      this.swerveDrive.setDefaultCommand(
+          new SwerveDriveJoystickCommand(joystick::getY, joystick::getX, driveController::getRightX,
+              swerveDrive));
+    }
     // Configure the trigger bindings
     configureBindings();
-    initShuffleboard();
   }
 
   /**
@@ -47,8 +62,8 @@ public class RobotContainer {
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in
    * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
+   * {@link CommandXboxController Xbox}/{@link
+   * edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
