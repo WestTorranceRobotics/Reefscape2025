@@ -29,8 +29,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here.
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandPS4Controller driveController = new CommandPS4Controller(1);
-  CommandJoystick joystick = new CommandJoystick(0);
+  CommandPS4Controller driveController = new CommandPS4Controller(0);
 
   private Pigeon2 gyro = new Pigeon2(9);
   private SwerveDriveTrain swerveSubsystem;
@@ -50,8 +49,8 @@ public class RobotContainer {
     } else {
       this.swerveDrive = new MapleSimSwerveDrive();
       this.swerveDrive.setDefaultCommand(
-          new SwerveDriveJoystickCommand(joystick::getY, joystick::getX, driveController::getRightX,
-              swerveDrive));
+          new SwerveDriveJoystickCommand(driveController::getLeftY, driveController::getLeftX,
+              driveController::getRightX, swerveDrive));
     }
     // Configure the trigger bindings
     configureBindings();

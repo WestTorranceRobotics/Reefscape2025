@@ -15,6 +15,8 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 
+import java.awt.event.TextEvent;
+
 import static edu.wpi.first.units.Units.*;
 
 public class MapleSimSwerveDrive implements SwerveDrive {
@@ -24,7 +26,8 @@ public class MapleSimSwerveDrive implements SwerveDrive {
     final DriveTrainSimulationConfig driveTrainSimulationConfig =
         DriveTrainSimulationConfig.Default().withGyro(COTS.ofPigeon2()).withSwerveModule(
             new SwerveModuleSimulationConfig(DCMotor.getFalcon500(1), DCMotor.getNEO(1), 5.143, 12,
-                Volts.of(0.1), Volts.of(0.1), Meters.of(0.048), KilogramSquareMeters.of(0.02), 1.2));
+                Volts.of(0.1), Volts.of(0.1), Meters.of(0.048), KilogramSquareMeters.of(0.02),
+                1.2));
 
     this.simulatedDrive = new SelfControlledSwerveDriveSimulation(
         new SwerveDriveSimulation(driveTrainSimulationConfig, new Pose2d(0, 0, new Rotation2d())));
@@ -54,6 +57,10 @@ public class MapleSimSwerveDrive implements SwerveDrive {
 
   @Override
   public Pose2d getPose() {
+    return this.simulatedDrive.getOdometryEstimatedPose();
+  }
+
+  public Pose2d getSimPose() {
     return this.simulatedDrive.getActualPoseInSimulationWorld();
   }
 
@@ -72,7 +79,14 @@ public class MapleSimSwerveDrive implements SwerveDrive {
     this.simulatedDrive.periodic();
     this.simulatedDrive.resetOdometry(getPose());
 
-    Telemetry.getInstance().setSimulationPose(this.getPose());
+    Telemetry telemetryInstance = Telemetry.getInstance();
+
+    telemetryInstance.setSimulationPose(this.getSimPose());
+    telemetryInstance.setSimulationPose(this.getPose());
+    telemetryInstance.setSwerveModuleStates(this.simulatedDrive.getMeasuredStates());
+    telemetryInstance.setSwerveModulePositions(this.simulatedDrive.getLatestModulePositions());
+
+
   }
 
   public AbstractDriveTrainSimulation getSimDrive() {
