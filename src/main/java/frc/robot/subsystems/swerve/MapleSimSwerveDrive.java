@@ -43,10 +43,10 @@ public class MapleSimSwerveDrive implements SwerveDrive {
   }
 
   @Override
-  public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
+  public void drive(Translation2d translation, double rotation, boolean fieldCentric, boolean isOpenLoop) {
     this.simulatedDrive.runChassisSpeeds(
         new ChassisSpeeds(translation.getX(), translation.getY(), rotation), new Translation2d(),
-        true, true);
+        fieldCentric, true);
   }
 
   @Override
@@ -82,11 +82,10 @@ public class MapleSimSwerveDrive implements SwerveDrive {
     Telemetry telemetryInstance = Telemetry.getInstance();
 
     telemetryInstance.setSimulationPose(this.getSimPose());
-    telemetryInstance.setSimulationPose(this.getPose());
+    telemetryInstance.setOdometryPose(this.getPose());
     telemetryInstance.setSwerveModuleStates(this.simulatedDrive.getMeasuredStates());
+    telemetryInstance.setSwerveModuleTargets(this.simulatedDrive.getSetPointsOptimized());
     telemetryInstance.setSwerveModulePositions(this.simulatedDrive.getLatestModulePositions());
-
-
   }
 
   public AbstractDriveTrainSimulation getSimDrive() {

@@ -26,7 +26,7 @@ public class SwerveDriveJoystickCommand extends Command {
       if (Math.abs(val) < DriveConstants.kTanDeadband) {
         val = 0;
       }
-      return val * 3;
+      return val * 6;
     }
   }
 
@@ -55,13 +55,13 @@ public class SwerveDriveJoystickCommand extends Command {
   @Override
   public void execute() {
     drive.drive(new Translation2d(modifyInputs(-x.getAsDouble(), false),
-        modifyInputs(-y.getAsDouble(), false)), modifyInputs(z.getAsDouble(), true), false);
+        modifyInputs(-y.getAsDouble(), false)), modifyInputs(z.getAsDouble(), true), false, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.drive(new Translation2d(0, 0), 0, false);
+    drive.drive(new Translation2d(0, 0), 0, false, false);
   }
 
   // Returns true when the command should end.

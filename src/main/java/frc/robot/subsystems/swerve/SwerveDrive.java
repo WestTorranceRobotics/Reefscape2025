@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface SwerveDrive extends Subsystem {
-  void drive(Translation2d translation, double rotation, boolean isOpenLoop);
+  void drive(Translation2d translation, double rotation, boolean fieldCentric, boolean isOpenLoop);
 
   void setPose(Pose2d pose);
 

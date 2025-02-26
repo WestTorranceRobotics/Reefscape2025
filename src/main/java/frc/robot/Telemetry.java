@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -21,6 +22,8 @@ public class Telemetry {
       driveStateTable.getStructTopic("RealPose", Pose2d.struct).publish();
   private final StructArrayPublisher<SwerveModuleState> swerveModuleStates =
       driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
+  private final StructArrayPublisher<SwerveModuleState> swerveModuleTargets =
+      driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleState.struct).publish();
   private final StructArrayPublisher<SwerveModulePosition> swerveModulePositions =
       driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
 
@@ -35,15 +38,8 @@ public class Telemetry {
     return instance;
   }
 
-  //  private final Field2d field;
-
   public Telemetry() {
   }
-
-
-  //  public Field2d getField() {
-  //    return field;
-  //  }
 
   private void setField2d(Pose2d pose) {
     double[] fieldArray = new double[3];
@@ -53,6 +49,8 @@ public class Telemetry {
 
     fieldTypePublisher.set("Field2d");
     fieldPublisher.set(fieldArray);
+
+    SignalLogger.writeDoubleArray("DriveState/Pose", fieldArray);
   }
 
   public void setSimulationPose(Pose2d realPose) {
@@ -70,5 +68,9 @@ public class Telemetry {
 
   public void setSwerveModulePositions(SwerveModulePosition[] swerveModulePositions) {
     this.swerveModulePositions.set(swerveModulePositions);
+  }
+
+  public void setSwerveModuleTargets(SwerveModuleState[] swerveModuleTargets) {
+    this.swerveModuleTargets.set(swerveModuleTargets);
   }
 }
