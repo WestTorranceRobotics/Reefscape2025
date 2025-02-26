@@ -97,8 +97,8 @@ public class RobotContainer {
   }
 
   public final void initShuffleboard() {
-    swerveSubsystem.initModuleShuffleboard(1);
-    swerveSubsystem.initMainShuffleboard(1);
+    swerveSubsystem.initModuleShuffleboard(3);
+    swerveSubsystem.initMainShuffleboard(3);
   }
 
   /**
