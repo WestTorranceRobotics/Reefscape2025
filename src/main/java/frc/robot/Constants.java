@@ -83,7 +83,7 @@ public final class Constants {
     // public static final double kDDrive = 0.01;
     // public static final double kVDrive = 0.11;
 
-    public static final double kPDrive = 0; // 0.6
+    public static final double kPDrive = 0.05; // 0.6
     public static final double kIDrive = 0;
     public static final double kDDrive = 0;
     public static final double kVDrive = 0.11;

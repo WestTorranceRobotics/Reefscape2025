@@ -25,7 +25,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here.
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandPS4Controller driveController = new CommandPS4Controller(0);
+  CommandXboxController driveController = new CommandXboxController(0);
 
   private Pigeon2 gyro = new Pigeon2(9);
   private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
@@ -53,7 +53,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driveController.R2().onTrue(Commands.runOnce(() -> {
+    driveController.rightBumper().onTrue(Commands.runOnce(() -> {
       gyro.setYaw(0);
       driveController.setRumble(RumbleType.kBothRumble, 0);
 
