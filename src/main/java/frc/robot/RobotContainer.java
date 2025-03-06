@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.SwerveDriveJoystickCommand;
+import frc.robot.commands.swerve.SwerveDriveOrbitCommand;
 import frc.robot.commands.swerve.SwerveJoystickCommand;
 import frc.robot.subsystems.swerve.MapleSimSwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive;
@@ -49,8 +52,7 @@ public class RobotContainer {
     } else {
       this.swerveDrive = new MapleSimSwerveDrive();
       this.swerveDrive.setDefaultCommand(
-          new SwerveDriveJoystickCommand(driveController::getLeftY, driveController::getLeftX,
-              driveController::getRightX, swerveDrive));
+          new SwerveDriveOrbitCommand(driveController::getLeftY, driveController::getLeftX, swerveDrive, new Translation2d(4.5, 4)));
     }
     // Configure the trigger bindings
     configureBindings();
