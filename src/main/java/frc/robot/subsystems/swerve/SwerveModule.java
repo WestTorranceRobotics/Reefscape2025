@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusCode;
@@ -124,7 +123,8 @@ public class SwerveModule {
         invertDriveMotor ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive;
 
-    // driveMotorConfigs.CurrentLimits.StatorCurrentLimit = 40;
+    driveMotorConfigs.CurrentLimits.StatorCurrentLimit = 40;
+    driveMotorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
     driveConfigurator.apply(driveMotorConfigs);
 
     /* TURN SPARKMAX CONFIGS */
@@ -317,7 +317,7 @@ public class SwerveModule {
    * @return Velocity of the drive motor (in meters / sec)
    */
   public double getDriveVelocityRPS() {
-    return driveMotor.getRotorVelocity().getValue().in(Units.RotationsPerSecond);
+    return driveMotor.getRotorVelocity().getValueAsDouble();
   }
 
   /**
@@ -341,7 +341,7 @@ public class SwerveModule {
   }
 
   /**
-   * Return the current state (velocity and rotation) of the Swerve Module
+   * Return the current state (velocity and rotation) of the Swerve Module.
    * 
    * @return This Swerve Module's State
    */
@@ -429,9 +429,9 @@ public class SwerveModule {
       case 3:
         tab.addNumber("Drive Motor Current",
             () -> driveMotor.getSupplyCurrent().getValue().in(Units.Amps));
-        tab.addNumber("Module Velocity", this::getDriveVelocity);
-        tab.addNumber("Module Velocity RPS", this::getDriveVelocityRPS);
-        tab.addNumber("Desired Velocity", () -> this.desiredVelocity);
+        tab.addNumber("Module Velocity", () -> Math.abs(getDriveVelocity()));
+        tab.addNumber("Module Velocity RPS", () -> Math.abs(getDriveVelocityRPS()));
+        tab.addNumber("Desired Velocity", () -> Math.abs(this.desiredVelocity));
         tab.addBoolean("Velocity Control", () -> this.velocityControl);
         tab.addString("Error Status", () -> driveMotor.getFaultField().getName());
         // tab.addRaw("Desired State", this::getDesiredState);

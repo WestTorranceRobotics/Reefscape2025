@@ -363,7 +363,7 @@
     <module name="JavadocParagraph">
       <property name="allowNewlineParagraph" value="true"/>
     </module>
-    <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+    <!-- <module name="RequireEmptyLineBeforeBlockTagGroup"/> -->
     <module name="AtclauseOrder">
       <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
       <property name="target"

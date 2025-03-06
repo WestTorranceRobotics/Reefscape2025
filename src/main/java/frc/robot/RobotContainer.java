@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,7 +16,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.commands.RunIntakeForward;
 import frc.robot.commands.swerve.SwerveJoystickCommand;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.SwerveDriveTrain;
 
 /**
@@ -22,22 +29,24 @@ import frc.robot.subsystems.swerve.SwerveDriveTrain;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here.
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandPS4Controller driveController = new CommandPS4Controller(0);
 
   private Pigeon2 gyro = new Pigeon2(9);
   private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
+  private Intake intake = new Intake(false);
+
+  private RunIntakeForward runIntakeForwardCommand = new RunIntakeForward(intake);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(driveController::getLeftY,
         driveController::getLeftX, driveController::getRightX, swerveSubsystem));
-    // Configure the trigger bindings
+    // intake.setDefaultCommand(intake.idleBackwardsCommand());
+
+
+
     configureBindings();
     initShuffleboard();
   }
@@ -53,52 +62,35 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driveController.R2().onTrue(Commands.runOnce(() -> {
+    driveController.R1().onTrue(Commands.runOnce(() -> {
       gyro.setYaw(0);
-      driveController.setRumble(RumbleType.kBothRumble, 0);
-
+      driveController.setRumble(RumbleType.kLeftRumble, 1);
+      driveController.setRumble(RumbleType.kRightRumble, 1);
     }));
+
+    driveController.R1().onFalse(Commands.runOnce(() -> {
+      driveController.setRumble(RumbleType.kLeftRumble, 0);
+      driveController.setRumble(RumbleType.kRightRumble, 0);
+    }));
+
+    driveController.circle().onTrue(intake.c_setIntakeSpeedCommand(120));
+    driveController.circle().onFalse(intake.c_stopCommand());
+
+    // driveController.circle().onFalse(Commands.runOnce(intake::stop));
 
     // driveAbutton.whileTrue(new ArmPercentCommand(arm, 0.75, false));
     // driveBbutton.whileTrue(new ArmPercentCommand(arm, -0.75, false));
     // driveAbutton.whileTrue(new IndexerPercentCommand(indexer, -0.2));
     // driveBbutton.whileTrue(new IndexerPercentCommand(indexer, 0.2));
-
-    // driveXbutton.whileTrue(new WristPercentCommand(wrist, 0.1, false));
-    // driveYbutton.whileTrue(new WristPercentCommand(wrist, -0.1, false));
-
-    // driveLeftTriggerButton.whileTrue(new IntakePercentCommand(intake, 0.2));
-    // driveRightTriggerButton.whileTrue(new IntakePercentCommand(intake, -0.2));
-
-    // // driveAbutton.whileTrue(new IntakePercentCommand(intake, 0.5));
-    // // driveBbutton.whileTrue(new IntakePercentCommand(intake, -0.5));
-
-    // driveLeftBumperButton.whileTrue(new shooterPercentCommand(shooter, 1.0));
-    // driveRightBumperButton.whileTrue(new shooterPercentCommand(shooter, -1.0));
-
-    // // driverUpPOVButton.whileTrue(new ArmTargetPositionManual(arm, 31));
-    // // driverDownPOVButton.whileTrue(new WristTargetPositionManual(wrist, -3));
-
-    // driverDownPOVButton.whileTrue(new NeutralPositionCommand(arm, wrist,
-    // intake));
-    // driverRightPOVButton.whileTrue(new GroundIntakeCommand(arm, intake, wrist));
-    // driverLeftPOVButton.onTrue(new ShooterFeedingCommand(arm, intake, wrist,
-    // shooter));
-    // driverUpPOVButton.onTrue(new AmpScoringCommand(arm, wrist, intake));
-
-    // // driverLeftPOVButton.onTrue(new intakeControlledCommand(intake, 2400));
-
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
-
   }
 
+  /**
+   * Set up Shuffleboard logs here.
+   */
   public final void initShuffleboard() {
-    swerveSubsystem.initModuleShuffleboard(3);
-    swerveSubsystem.initMainShuffleboard(3);
+    swerveSubsystem.initModuleShuffleboard(1);
+    swerveSubsystem.initMainShuffleboard(1);
+    intake.initShuffleboard();
   }
 
   /**
@@ -108,8 +100,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("New Auto");
-
-    // An example command will be run in autonomous
-    // return null;
   }
 }

@@ -79,11 +79,11 @@ public final class Constants {
     public static final double kFTurning = 0;
 
     // public static final double kPDrive = 0.00016; // 0.6
-    // public static final double kIDrive = 0.1;
+    // public static final double kIDrive = 0.0;
     // public static final double kDDrive = 0.01;
     // public static final double kVDrive = 0.11;
 
-    public static final double kPDrive = 0; // 0.6
+    public static final double kPDrive = 0.001; // 0.6
     public static final double kIDrive = 0;
     public static final double kDDrive = 0;
     public static final double kVDrive = 0.11;
@@ -145,7 +145,7 @@ public final class Constants {
 
       public static final double kFLEncoderOffset = 235.723;
       public static final double kBLEncoderOffset = 332.227;
-      public static final double kFREncoderOffset = 35.068;
+      public static final double kFREncoderOffset = 35.568;
       public static final double kBREncoderOffset = 43.242;
 
       // public static final double kFLEncoderOffset = 0;
@@ -203,7 +203,7 @@ public final class Constants {
       public static final PathConstraints kPPPathConstraints = new PathConstraints(kPPMaxVelocity,
           kPPMaxAcceleration, kPPMaxAngularVelocity, kPPMaxAngularAcceleration);
 
-      public static final double kPP_P = 0;
+      public static final double kPP_P = 0.002;
       public static final double kPP_I = 0;
       public static final double kPP_D = 0;
       public static final PIDConstants kPPTranslationPIDConstants =
@@ -218,42 +218,5 @@ public final class Constants {
       public static final boolean kUseAllianceColor = true;
     }
   }
-
-  public static final int kWristMotorID = 31;
-  public static final int kWristThroughBoneEncoderAID = 7;
-  public static final int kWristThroughBoneEncoderBID = 6;
-
-  public static final double kAllowedError = 3;
-
-  // Motor Config
-  public static final double kRotorToSensorRatio = 1;
-  public static final double kSensorToMechanismRatio = 1;
-  public static final double kDutyCycleNeutralDeadband = 0.01;
-  public static final boolean kInvertClockwise = true;
-  public static final boolean kIdleBrake = true;
-
-  // Magic Motion Constants
-  // double kP, double kI, double kD, double kV, double kS, double kA, double kG,
-  // double cruiseVel, double accel
-  public static final double kP = 0.75;
-  public static final double kI = 0;
-  public static final double kD = 0;
-  public static final double kV = 0;
-  public static final double kS = 0;
-  public static final double kA = 0;
-  public static final double kG = 0;
-  public static final double kCruiseVel = 0;
-  public static final double kAccel = 0;
-
-  // Through Bore Encoder Configs
-  public static final double kEncoderOffset = 0;
-  public static final double kEncoderPositionToAngle = 0;
-
-  // Preset Position
-  public static final double kNeutralPosition = 0;
-
-  public static final double kGroundIntakePosition = -3;
-  public static final double kShooterFeedingPosition = 11;
-  public static final double kAmpScoringPosition = -3;
 
 }
