@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.SwerveDrive;
+import org.dyn4j.UnitConversion;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.Vector;
@@ -21,10 +22,21 @@ public class SwerveDriveOrbitCommand extends Command {
 
   private DoubleSupplier forward;
   private DoubleSupplier side;
-//  TODO: Add way to make PID go in optimal direction
+  //  TODO: Add way to make PID go in optimal direction
   private PIDController pidController = new PIDController(kP, kI, kD);
 
   private Translation2d targetPosition;
+
+  public double closetAngle(double current, double target) {
+    double direction = Math.signum(target - current);
+    double changes = Math.abs(target - current);
+
+    if (Math.abs(current - target) > 180) {
+      changes = Math.abs(360 - changes);
+      direction *= -1;
+    }
+    return changes * direction;
+  }
 
   private double modifyInputs(double val) {
     if (Math.abs(val) < Constants.DriveConstants.kTanDeadband) {
@@ -41,6 +53,7 @@ public class SwerveDriveOrbitCommand extends Command {
     this.drive = drive;
 
     this.targetPosition = targetPosition;
+    pidController.setSetpoint(0);
 
     addRequirements(drive);
   }
@@ -48,11 +61,10 @@ public class SwerveDriveOrbitCommand extends Command {
 
   @Override
   public void execute() {
-    pidController.setSetpoint(this.getTargetHeading());
-
     this.drive.drive(new Translation2d(modifyInputs(-this.forward.getAsDouble()),
-            modifyInputs(-this.side.getAsDouble())),
-        pidController.calculate(this.drive.getHeading().getRadians()), true, false);
+        modifyInputs(-this.side.getAsDouble())), pidController.calculate(
+        -this.closetAngle(this.drive.getHeading().getDegrees(),
+            this.getTargetHeading() / Math.PI * 180) / 180 * Math.PI), true, false);
   }
 
   @Override
