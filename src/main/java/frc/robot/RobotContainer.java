@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ModuleConstants;
-import frc.robot.commands.RunIntakeForward;
 import frc.robot.commands.swerve.SwerveJoystickCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.SwerveDriveTrain;
@@ -35,33 +30,28 @@ public class RobotContainer {
   private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
   private Intake intake = new Intake(false);
 
-  private RunIntakeForward runIntakeForwardCommand = new RunIntakeForward(intake);
+  // private RunIntakeAuto runIntakeAuto = new RunIntakeAuto(intake, 4);
+
+  private Command runIntakeAuto = Commands.sequence(
+      intake.c_directSetIntakeSpeedCommand(-0.2),
+      Commands.waitSeconds(1),
+      intake.c_stopCommand());
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(driveController::getLeftY,
-        driveController::getLeftX, driveController::getRightX, swerveSubsystem));
-    // intake.setDefaultCommand(intake.idleBackwardsCommand());
+    swerveSubsystem.setDefaultCommand(
+        new SwerveJoystickCommand(driveController::getLeftY, driveController::getLeftX,
+            driveController::getRightX, swerveSubsystem));
 
-
+    NamedCommands.registerCommand("RunIntakeAuto", runIntakeAuto);
 
     configureBindings();
     initShuffleboard();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
-   */
   private void configureBindings() {
-
     driveController.R1().onTrue(Commands.runOnce(() -> {
       gyro.setYaw(0);
       driveController.setRumble(RumbleType.kLeftRumble, 1);
@@ -73,15 +63,14 @@ public class RobotContainer {
       driveController.setRumble(RumbleType.kRightRumble, 0);
     }));
 
-    driveController.circle().onTrue(intake.c_setIntakeSpeedCommand(120));
+    driveController.circle().onTrue(intake.c_directSetIntakeSpeedCommand(-0.2));
     driveController.circle().onFalse(intake.c_stopCommand());
 
-    // driveController.circle().onFalse(Commands.runOnce(intake::stop));
+    driveController.cross().onTrue(intake.c_directSetIntakeSpeedCommand(-0.05));
+    driveController.cross().onFalse(intake.c_stopCommand());
 
-    // driveAbutton.whileTrue(new ArmPercentCommand(arm, 0.75, false));
-    // driveBbutton.whileTrue(new ArmPercentCommand(arm, -0.75, false));
-    // driveAbutton.whileTrue(new IndexerPercentCommand(indexer, -0.2));
-    // driveBbutton.whileTrue(new IndexerPercentCommand(indexer, 0.2));
+    // Testing command
+    driveController.triangle().onTrue(runIntakeAuto);
   }
 
   /**
@@ -99,6 +88,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("rotation test");
   }
 }

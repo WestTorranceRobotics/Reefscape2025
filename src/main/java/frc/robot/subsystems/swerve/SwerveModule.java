@@ -99,9 +99,10 @@ public class SwerveModule {
 
     this.desiredState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
 
-    this.sim_driveMotor =
-        new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(1), 0.001,
-            ModuleConstants.kDriveMotorGearRatio), DCMotor.getFalcon500Foc(1));
+    this.sim_driveMotor = new DCMotorSim(LinearSystemId.createDCMotorSystem(
+        DCMotor.getFalcon500Foc(1),
+        0.001,
+        ModuleConstants.kDriveMotorGearRatio), DCMotor.getFalcon500Foc(1));
 
     this.driveConfigurator = driveMotor.getConfigurator();
     this.driveRequest = new DutyCycleOut(0);
@@ -132,8 +133,8 @@ public class SwerveModule {
 
     sparkConfig.smartCurrentLimit(50).idleMode(IdleMode.kBrake).openLoopRampRate(0.2)
         .inverted(invertTurningMotor);
-    turnMotor.configure(sparkConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kNoPersistParameters);
+    turnMotor
+        .configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     this.brakeRequest = new NeutralOut();
 
@@ -402,8 +403,27 @@ public class SwerveModule {
     if (level == 0) {
       return;
     }
-    int moduleId = driveMotorID;
-    ShuffleboardTab tab = Shuffleboard.getTab("Module " + moduleId);
+
+    String moduleName;
+    switch (driveMotorID) {
+      case 21:
+        moduleName = "backRight";
+        break;
+      case 22:
+        moduleName = "backLeft";
+        break;
+      case 23:
+        moduleName = "frontRight";
+        break;
+      case 24:
+        moduleName = "frontLeft";
+        break;
+
+      default:
+        throw new Error("Drive motor not found");
+    }
+
+    ShuffleboardTab tab = Shuffleboard.getTab("Module " + moduleName);
 
     switch (level) {
       case 0:
@@ -414,9 +434,12 @@ public class SwerveModule {
         tab.addNumber("Turn percent (current)", () -> this.currentTurnPercent);
       case 2:
         tab.addNumber("Turn Motor Current", () -> turnMotor.getAppliedOutput());
-        tab.addNumber("Drive Motor Voltage", () -> (driveMotor.getDutyCycle().getValue().intValue()
-            * driveMotor.getSupplyVoltage().getValue().in(Units.Volts)));
-        tab.addNumber("Drive percent (motor controller)",
+        tab.addNumber(
+            "Drive Motor Voltage",
+            () -> (driveMotor.getDutyCycle().getValueAsDouble()
+                * driveMotor.getSupplyVoltage().getValueAsDouble()));
+        tab.addNumber(
+            "Drive percent (motor controller)",
             () -> driveMotor.getDutyCycle().getValue());
         tab.addNumber("Drive percent (current)", () -> this.currentPercent);
 
@@ -427,7 +450,8 @@ public class SwerveModule {
         tab.addNumber("Desired Angle", () -> desiredAngle);
         tab.addNumber("Angle Difference", () -> desiredAngle - currentAngle);
       case 3:
-        tab.addNumber("Drive Motor Current",
+        tab.addNumber(
+            "Drive Motor Current",
             () -> driveMotor.getSupplyCurrent().getValue().in(Units.Amps));
         tab.addNumber("Module Velocity", () -> Math.abs(getDriveVelocity()));
         tab.addNumber("Module Velocity RPS", () -> Math.abs(getDriveVelocityRPS()));

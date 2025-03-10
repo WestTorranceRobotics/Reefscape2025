@@ -47,8 +47,8 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   private Field2d field;
 
-  private double maxTangentialVelocity = 1.5;
-  private double maxAngleVelocity = Math.PI;
+  private double maxTangentialVelocity = 2;
+  private double maxAngleVelocity = 1.5 * Math.PI;
 
   // StructTopic<Pose2d> publisher =
   // NetworkTableInstance.getDefault().getStructTopic("SwervePose",

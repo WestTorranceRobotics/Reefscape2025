@@ -9,20 +9,16 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,7 +40,6 @@ public class Intake extends SubsystemBase {
   // the MOTOR needs to turn twice for the INTAKE to turn once.
   private final double kGearRatio = 2;
 
-
   /** Target velocity in rotations per minute. */
   private double targetVelocity;
 
@@ -60,7 +55,8 @@ public class Intake extends SubsystemBase {
     config.openLoopRampRate(0.2);
     config.inverted(invert);
 
-    config.closedLoop.pidf(0.001, 0, 0, 0);
+    config.closedLoop.maxMotion.allowedClosedLoopError(0.2);
+    config.closedLoop.pidf(0.001, 0, 0, 1);
 
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     targetVelocity = 0;
@@ -84,7 +80,7 @@ public class Intake extends SubsystemBase {
     // the MOTOR needs to turn twice for the INTAKE to turn once.
 
     intakeMotor.getClosedLoopController().setReference(targetVelocity,
-        ControlType.kMAXMotionVelocityControl);
+        ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
   }
 
   public void directSetSpeed(double speed) {
@@ -96,14 +92,21 @@ public class Intake extends SubsystemBase {
    */
   public void stop() {
     targetVelocity = 0;
-    intakeMotor.getClosedLoopController().setReference(targetVelocity,
-        ControlType.kMAXMotionVelocityControl);
+    // intakeMotor.getClosedLoopController().setReference(targetVelocity,
+    // ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
     intakeMotor.set(0);
   }
 
-  public Command c_setIntakeSpeedCommand(int target_rpm) {
+  // public Command c_setIntakeSpeedCommand(int target_rpm) {
+  //   return Commands.runOnce(() -> {
+  //     intakeMotor.set(-0.2);
+  //     // setIntakeSpeed(target_rpm);
+  //   }, this);
+  // }
+
+  public Command c_directSetIntakeSpeedCommand(double speed) {
     return Commands.runOnce(() -> {
-      setIntakeSpeed(target_rpm);
+      intakeMotor.set(speed);
     }, this);
   }
 
@@ -123,6 +126,8 @@ public class Intake extends SubsystemBase {
     } else {
       tab.addNumber("Intake actual velocity", () -> intakeMotor.getEncoder().getVelocity());
     }
+
+    tab.addNumber("Intake applied output", () -> intakeMotor.getAppliedOutput());
   }
 
   @Override

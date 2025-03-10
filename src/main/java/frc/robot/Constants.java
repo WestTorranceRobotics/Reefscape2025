@@ -26,23 +26,6 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class SubSystemConfigs {
-
-    public static final boolean kEnableWrist = true;
-    public static final boolean kEnableShooter = false;
-    public static final boolean kEnableIntake = false;
-    public static final boolean kEnableIndexer = false;
-    public static final boolean kEnableArm = true;
-
-    // Through Bore Encoder Configs
-    public static final double kEncoderOffset = 0;
-    public static final double kEncoderPositionToAngle = 0;
-
-    // Preset Position
-    public static final double kStowPosition = 0;
-
-  }
-
   public static class DriveConstants {
     public static final double kDriveAlpha = 0.11765;
     public static final double kDriveOneMinusAlpha = 0.88235;
@@ -83,9 +66,9 @@ public final class Constants {
     // public static final double kDDrive = 0.01;
     // public static final double kVDrive = 0.11;
 
-    public static final double kPDrive = 0.001; // 0.6
+    public static final double kPDrive = 0.125; // 0.6
     public static final double kIDrive = 0;
-    public static final double kDDrive = 0;
+    public static final double kDDrive = 0.01;
     public static final double kVDrive = 0.11;
 
     public static final String kCANivoreName = "rio";
@@ -101,11 +84,11 @@ public final class Constants {
     // Distance between front and back wheels
     public static final double kWheelBase = 0.635;
 
-    public static final SwerveDriveKinematics kDriveKinematics =
-        new SwerveDriveKinematics(new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, kTrackWidth / 2));
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, kTrackWidth / 2));
 
     public static final int kFRDriveID = 23;
     public static final int kFLDriveID = 24;
@@ -200,16 +183,19 @@ public final class Constants {
       public static final double kPPMaxAcceleration = 3;
       public static final double kPPMaxAngularVelocity = Math.PI * 2;
       public static final double kPPMaxAngularAcceleration = Math.PI * 2;
-      public static final PathConstraints kPPPathConstraints = new PathConstraints(kPPMaxVelocity,
-          kPPMaxAcceleration, kPPMaxAngularVelocity, kPPMaxAngularAcceleration);
+      public static final PathConstraints kPPPathConstraints = new PathConstraints(
+          kPPMaxVelocity,
+          kPPMaxAcceleration,
+          kPPMaxAngularVelocity,
+          kPPMaxAngularAcceleration);
 
-      public static final double kPP_P = 0.002;
+      public static final double kPP_P = 0.01;
       public static final double kPP_I = 0;
-      public static final double kPP_D = 0;
+      public static final double kPP_D = 0.;
       public static final PIDConstants kPPTranslationPIDConstants =
           new PIDConstants(kPP_P, kPP_I, kPP_D);
 
-      public static final double kPP_ThetaP = 0.25;
+      public static final double kPP_ThetaP = 0.4;
       public static final double kPP_ThetaI = 0;
       public static final double kPP_ThetaD = 0;
       public static final PIDConstants kPPRotationPIDConstants =
@@ -218,5 +204,4 @@ public final class Constants {
       public static final boolean kUseAllianceColor = true;
     }
   }
-
 }
