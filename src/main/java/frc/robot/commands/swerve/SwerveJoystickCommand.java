@@ -22,7 +22,7 @@ public class SwerveJoystickCommand extends Command {
       if (Math.abs(val) < DriveConstants.kAngDeadband) {
         val = 0;
       }
-      return val * drive.getAng();
+      return val * drive.getMaxAngVelocity();
     } else {
       if (Math.abs(val) < DriveConstants.kTanDeadband) {
         val = 0;
@@ -33,8 +33,8 @@ public class SwerveJoystickCommand extends Command {
 
   public void driveFromChassis(ChassisSpeeds speeds) {
     var states = SwerveDriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states,
-        SwerveDriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    SwerveDriveKinematics
+        .desaturateWheelSpeeds(states, SwerveDriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     drive.setModuleStates(states);
   }
 
@@ -54,19 +54,17 @@ public class SwerveJoystickCommand extends Command {
     addRequirements(drive);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println(modifyInputs(x.getAsDouble(), false));
-    // System.out.println(modifyInputs(y.getAsDouble(), false));
-
-    driveFromChassis(ChassisSpeeds.fromFieldRelativeSpeeds(modifyInputs(-x.getAsDouble(), false),
-        modifyInputs(-y.getAsDouble(), false), modifyInputs(z.getAsDouble(), true),
-        Rotation2d.fromDegrees(drive.getDriveHeading().getDegrees())));
+    driveFromChassis(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            modifyInputs(-x.getAsDouble(), false),
+            modifyInputs(-y.getAsDouble(), false),
+            modifyInputs(z.getAsDouble(), true),
+            Rotation2d.fromDegrees(drive.getDriveHeading().getDegrees())));
 
     // set LED Color
     // double[] hueRange = { 120, 180 };
@@ -77,13 +75,11 @@ public class SwerveJoystickCommand extends Command {
     // DriveTrainLEDs.setHueLerp(hueRange, currentSpeed / maxSpeed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     driveFromChassis(new ChassisSpeeds());
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

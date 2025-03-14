@@ -223,7 +223,7 @@ public class SwerveDriveTrain extends SubsystemBase {
     return maxTangentialVelocity;
   }
 
-  public final double getAng() {
+  public final double getMaxAngVelocity() {
     return maxAngleVelocity;
   }
 
