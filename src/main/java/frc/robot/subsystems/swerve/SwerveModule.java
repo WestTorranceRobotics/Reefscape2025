@@ -308,8 +308,8 @@ public class SwerveModule {
    * @return Velocity of the drive motor (in meters / sec)
    */
   public double getDriveVelocity() {
-    return driveMotor.getRotorVelocity().getValue().in(Units.RevolutionsPerSecond)
-        * ModuleConstants.kMetersPerRevolution * ModuleConstants.kDriveMotorGearRatio;
+    return driveMotor.getRotorVelocity().getValueAsDouble() * ModuleConstants.kMetersPerRevolution
+        * ModuleConstants.kDriveMotorGearRatio;
   }
 
   /**
@@ -353,7 +353,7 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    currPosition.distanceMeters = -getDrivePosition(); // Dunno why but this fix everything
+    currPosition.distanceMeters = getDrivePosition(); // Dunno why but this fix everything
     // currPosition.angle = Rotation2d.fromRadians(getTurningPosition());
     currPosition.angle = Rotation2d.fromDegrees(getTurningPositionDegreesWithOffset());
 

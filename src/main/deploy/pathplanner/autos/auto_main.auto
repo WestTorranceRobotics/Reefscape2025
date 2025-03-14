@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "path_to_reef"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "RunIntakeAuto"
@@ -13,7 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "path_reef_to_intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "path_intake_to_reef"
           }
         },
         {

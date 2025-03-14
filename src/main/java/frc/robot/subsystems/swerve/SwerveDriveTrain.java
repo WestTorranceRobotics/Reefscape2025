@@ -108,6 +108,7 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     this.poseEstimator = new SwerveDrivePoseEstimator(SwerveDriveConstants.kDriveKinematics,
         gyro.getRotation2d(), getModulePositions(), new Pose2d());
+
     // this.odometer = new SwerveDriveOdometry(
     // kDriveKinematics,
     // new Rotation2d(0),
@@ -124,17 +125,22 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     field = new Field2d();
     field.setRobotPose(poseEstimator.getEstimatedPosition());
-    AutoBuilder.configure(this::getPose, this::resetOdometry, this::getChassisSpeeds,
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetOdometry,
+        this::getChassisSpeeds,
         this::setChassisSpeeds,
         new PPHolonomicDriveController(PathPlannerConstants.kPPTranslationPIDConstants,
             PathPlannerConstants.kPPRotationPIDConstants),
-        config, () -> {
+        config,
+        () -> {
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
-        }, this);
+        },
+        this);
   }
 
   @Override
@@ -252,8 +258,9 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public final void drive(final double xSpeed, final double ySpeed, final double turnSpeed) {
-    setModuleStates(SwerveDriveConstants.kDriveKinematics
-        .toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, turnSpeed)));
+    setModuleStates(
+        SwerveDriveConstants.kDriveKinematics
+            .toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, turnSpeed)));
   }
 
   public final void drive(final double xSpeed, final double ySpeed) {
@@ -262,8 +269,10 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public final void driveFieldOriented(final double xSpeed, final double ySpeed,
       final double turnSpeed) {
-    setModuleStates(SwerveDriveConstants.kDriveKinematics.toSwerveModuleStates(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, gyro.getRotation2d())));
+    setModuleStates(
+        SwerveDriveConstants.kDriveKinematics.toSwerveModuleStates(
+            ChassisSpeeds
+                .fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, gyro.getRotation2d())));
   }
 
   public final void driveFieldOriented(final double xSpeed, final double ySpeed) {
@@ -375,7 +384,8 @@ public class SwerveDriveTrain extends SubsystemBase {
       case 2, 3:
         tab.addNumber("X Position (m)", () -> poseEstimator.getEstimatedPosition().getX());
         tab.addNumber("Y Position (m)", () -> poseEstimator.getEstimatedPosition().getY());
-        tab.addNumber("Odometry Angle",
+        tab.addNumber(
+            "Odometry Angle",
             () -> poseEstimator.getEstimatedPosition().getRotation().getDegrees());
         tab.addNumber("Driver Heading", () -> getDriveHeading().getDegrees());
 

@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1987704918032787,
-        "y": 5.877100409836065
+        "x": 1.2480000000000002,
+        "y": 7.0475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1978334953512397,
-        "y": 5.465648551359056
+        "x": 2.248,
+        "y": 7.0475
+      },
+      "isLocked": false,
+      "linkedName": "At_Intake_Top_Left"
+    },
+    {
+      "anchor": {
+        "x": 3.4884221311475407,
+        "y": 6.644313524590164
+      },
+      "prevControl": {
+        "x": 2.8485337981697736,
+        "y": 6.8855828960407965
+      },
+      "nextControl": {
+        "x": 4.219672131147541,
+        "y": 6.36859631147541
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0568647540983607,
-        "y": 4.294723360655738
+        "x": 5.4014999999999995,
+        "y": 5.36075
       },
       "prevControl": {
-        "x": 2.838420017068752,
-        "y": 4.41630418506512
+        "x": 4.8670081967213115,
+        "y": 6.212756147540984
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "At_Reef_Top_Right"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -52.50000000000001
   },
   "useDefaultConstraints": true
 }

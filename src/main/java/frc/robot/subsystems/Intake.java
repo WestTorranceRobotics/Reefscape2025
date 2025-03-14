@@ -31,11 +31,6 @@ public class Intake extends SubsystemBase {
 
   private final DCMotor sim_gearbox;
   private final SparkMaxSim sim_intakeMotor;
-  private final FlywheelSim sim_intake;
-
-  // this is kinda arbitrary right now i'm not gonna lie but
-  // i'll do measurements later. this sim doesn't rlly matter anyways rn
-  private final double kMomentOfInertia = 5;
 
   // the MOTOR needs to turn twice for the INTAKE to turn once.
   private final double kGearRatio = 2;
@@ -64,10 +59,6 @@ public class Intake extends SubsystemBase {
     // SIMULATION CONFIG
     sim_gearbox = DCMotor.getNEO(1);
     sim_intakeMotor = new SparkMaxSim(intakeMotor, sim_gearbox);
-
-    sim_intake = new FlywheelSim(
-        LinearSystemId.createFlywheelSystem(sim_gearbox, kMomentOfInertia, kGearRatio),
-        sim_gearbox);
   }
 
   /**
@@ -79,9 +70,10 @@ public class Intake extends SubsystemBase {
     targetVelocity = speed * 2; // gear ratio is 2:1.
     // the MOTOR needs to turn twice for the INTAKE to turn once.
 
-    intakeMotor.getClosedLoopController().setReference(targetVelocity,
-        ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+    intakeMotor.getClosedLoopController()
+        .setReference(targetVelocity, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
   }
+
 
   public void directSetSpeed(double speed) {
     intakeMotor.set(speed);
@@ -97,16 +89,15 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(0);
   }
 
-  // public Command c_setIntakeSpeedCommand(int target_rpm) {
-  //   return Commands.runOnce(() -> {
-  //     intakeMotor.set(-0.2);
-  //     // setIntakeSpeed(target_rpm);
-  //   }, this);
-  // }
+  public Command c_setIntakeSpeedCommand(int target_rpm) {
+    return Commands.runOnce(() -> {
+      setIntakeSpeed(target_rpm);
+    }, this);
+  }
 
   public Command c_directSetIntakeSpeedCommand(double speed) {
     return Commands.runOnce(() -> {
-      intakeMotor.set(speed);
+      directSetSpeed(speed);
     }, this);
   }
 
@@ -133,14 +124,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     if (Robot.isSimulation()) {
-      sim_intake.setInput(sim_intakeMotor.getAppliedOutput() * RoboRioSim.getVInVoltage());
-      sim_intake.update(0.02);
-
       sim_intakeMotor.iterate(targetVelocity / 60, RoboRioSim.getVInVoltage(), 0.02);
-
-      RoboRioSim.setVInVoltage(
-          BatterySim.calculateDefaultBatteryLoadedVoltage(sim_intake.getCurrentDrawAmps()));
-
     }
   }
 }

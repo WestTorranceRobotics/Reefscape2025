@@ -84,11 +84,11 @@ public final class Constants {
     // Distance between front and back wheels
     public static final double kWheelBase = 0.635;
 
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2));
+    public static final SwerveDriveKinematics kDriveKinematics =
+        new SwerveDriveKinematics(new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, kTrackWidth / 2));
 
     public static final int kFRDriveID = 23;
     public static final int kFLDriveID = 24;
@@ -172,9 +172,9 @@ public final class Constants {
   }
 
   public static final class SwerveAutoConstants {
-    public static final double kPTurnToAngle = SmartDashboard.getNumber("kP Theta Teleop", 6);
-    public static final double kITurnToAngle = SmartDashboard.getNumber("kI Theta Teleop", 0);
-    public static final double kDTurnToAngle = SmartDashboard.getNumber("kD Theta Teleop", 0.2);
+    // public static final double kPTurnToAngle = SmartDashboard.getNumber("kP Theta Teleop", 6);
+    // public static final double kITurnToAngle = SmartDashboard.getNumber("kI Theta Teleop", 0);
+    // public static final double kDTurnToAngle = SmartDashboard.getNumber("kD Theta Teleop", 0.2);
     public static final double kTurnToAnglePositionToleranceAngle = 5;
     public static final double kTurnToAngleVelocityToleranceAnglesPerSec = 2;
 
@@ -183,11 +183,8 @@ public final class Constants {
       public static final double kPPMaxAcceleration = 3;
       public static final double kPPMaxAngularVelocity = Math.PI * 2;
       public static final double kPPMaxAngularAcceleration = Math.PI * 2;
-      public static final PathConstraints kPPPathConstraints = new PathConstraints(
-          kPPMaxVelocity,
-          kPPMaxAcceleration,
-          kPPMaxAngularVelocity,
-          kPPMaxAngularAcceleration);
+      public static final PathConstraints kPPPathConstraints = new PathConstraints(kPPMaxVelocity,
+          kPPMaxAcceleration, kPPMaxAngularVelocity, kPPMaxAngularAcceleration);
 
       public static final double kPP_P = 0.01;
       public static final double kPP_I = 0;
@@ -195,7 +192,7 @@ public final class Constants {
       public static final PIDConstants kPPTranslationPIDConstants =
           new PIDConstants(kPP_P, kPP_I, kPP_D);
 
-      public static final double kPP_ThetaP = 0.4;
+      public static final double kPP_ThetaP = 0.25;
       public static final double kPP_ThetaI = 0;
       public static final double kPP_ThetaD = 0;
       public static final PIDConstants kPPRotationPIDConstants =

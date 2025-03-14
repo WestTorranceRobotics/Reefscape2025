@@ -5,9 +5,13 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -26,50 +30,57 @@ import frc.robot.subsystems.swerve.SwerveDriveTrain;
 public class RobotContainer {
   CommandPS4Controller driveController = new CommandPS4Controller(0);
 
-  private Pigeon2 gyro = new Pigeon2(9);
-  private SwerveDriveTrain swerveSubsystem = new SwerveDriveTrain(gyro);
-  private Intake intake = new Intake(false);
+  private Pigeon2 gyro;
+  private SwerveDriveTrain swerveSubsystem;
+  private Intake intake;
 
-  // private RunIntakeAuto runIntakeAuto = new RunIntakeAuto(intake, 4);
-
-  private Command runIntakeAuto = Commands.sequence(
-      intake.c_directSetIntakeSpeedCommand(-0.2),
-      Commands.waitSeconds(1),
-      intake.c_stopCommand());
+  private Command runIntakeAuto;
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    this.gyro = new Pigeon2(9);
+    this.swerveSubsystem = new SwerveDriveTrain(gyro);
+    this.intake = new Intake(true);
+
+    this.runIntakeAuto = Commands.sequence(
+        intake.c_directSetIntakeSpeedCommand(0.2),
+        Commands.waitSeconds(1),
+        intake.c_stopCommand());
+
+    NamedCommands.registerCommand("RunIntakeAuto", runIntakeAuto);
+
     swerveSubsystem.setDefaultCommand(
         new SwerveJoystickCommand(driveController::getLeftY, driveController::getLeftX,
             driveController::getRightX, swerveSubsystem));
 
-    NamedCommands.registerCommand("RunIntakeAuto", runIntakeAuto);
+    autoChooser = AutoBuilder.buildAutoChooser("auto_main");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
     initShuffleboard();
   }
 
   private void configureBindings() {
-    driveController.R1().onTrue(Commands.runOnce(() -> {
-      gyro.setYaw(0);
-      driveController.setRumble(RumbleType.kLeftRumble, 1);
-      driveController.setRumble(RumbleType.kRightRumble, 1);
-    }));
-
-    driveController.R1().onFalse(Commands.runOnce(() -> {
-      driveController.setRumble(RumbleType.kLeftRumble, 0);
-      driveController.setRumble(RumbleType.kRightRumble, 0);
-    }));
-
-    driveController.circle().onTrue(intake.c_directSetIntakeSpeedCommand(-0.2));
+    // circle -- Outtake fast
+    driveController.circle().onTrue(intake.c_directSetIntakeSpeedCommand(0.2));
     driveController.circle().onFalse(intake.c_stopCommand());
 
-    driveController.cross().onTrue(intake.c_directSetIntakeSpeedCommand(-0.05));
+    // cross -- Outtake slow
+    driveController.cross().onTrue(intake.c_directSetIntakeSpeedCommand(0.1));
     driveController.cross().onFalse(intake.c_stopCommand());
 
-    // Testing command
+    // Reset gyro
+    driveController.L1().onTrue(Commands.runOnce(() -> {
+      gyro.setYaw(0);
+    }));
+
+    // Run intake backwards to unwedge coral
+    driveController.R1().onTrue(intake.c_directSetIntakeSpeedCommand(-0.5));
+    driveController.R1().onFalse(intake.c_stopCommand());
+
     driveController.triangle().onTrue(runIntakeAuto);
   }
 
@@ -88,6 +99,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("rotation test");
+    return autoChooser.getSelected();
   }
 }
