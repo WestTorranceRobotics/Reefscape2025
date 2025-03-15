@@ -5,15 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "RunIntakeAuto"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "Left to reef"
           }
         },
         {

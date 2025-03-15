@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,6 +19,9 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer mrobotContainer;
 
+  private Pigeon2 gyro;
+
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -26,7 +30,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    mrobotContainer = new RobotContainer();
+    this.gyro = new Pigeon2(9);
+
+    mrobotContainer = new RobotContainer(this.gyro);
   }
 
   /**
@@ -82,6 +88,10 @@ public class Robot extends TimedRobot {
     if (mAutonomousCommand != null) {
       mAutonomousCommand.cancel();
     }
+
+    // Only for compeition with "Main auto". Since the default auto starts and ends the robot
+    // at 180 deg, we set the gyro to that to compensate
+    gyro.setYaw(180);
   }
 
   /** This function is called periodically during operator control. */

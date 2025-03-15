@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Rotation;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveDriveConstants;
 import frc.robot.Constants.SwerveDriveConstants.CANCoderConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.Constants.SwerveAutoConstants.PathPlannerConstants;
 
 public class SwerveDriveTrain extends SubsystemBase {
@@ -47,7 +50,7 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   private Field2d field;
 
-  private double maxTangentialVelocity = 2;
+  private double maxTangentialVelocity = 3;
   private double maxAngleVelocity = 1.5 * Math.PI;
 
   // StructTopic<Pose2d> publisher =
@@ -86,28 +89,47 @@ public class SwerveDriveTrain extends SubsystemBase {
    */
   public SwerveDriveTrain(final Pigeon2 gyro) {
     // Initializing the modules
-    frontLeft = new SwerveModule(SwerveDriveConstants.kFLDriveID, SwerveDriveConstants.kFLTurningID,
-        SwerveDriveConstants.kFLDriveReversed, SwerveDriveConstants.kFLTurningReversed,
-        CANCoderConstants.kFLCANCoderID, CANCoderConstants.kFLCANCoderReversed,
+    frontLeft = new SwerveModule(
+        SwerveDriveConstants.kFLDriveID,
+        SwerveDriveConstants.kFLTurningID,
+        SwerveDriveConstants.kFLDriveReversed,
+        SwerveDriveConstants.kFLTurningReversed,
+        CANCoderConstants.kFLCANCoderID,
+        CANCoderConstants.kFLCANCoderReversed,
         CANCoderConstants.kFLEncoderOffset);
-    frontRight = new SwerveModule(SwerveDriveConstants.kFRDriveID,
-        SwerveDriveConstants.kFRTurningID, SwerveDriveConstants.kFRDriveReversed,
-        SwerveDriveConstants.kFRTurningReversed, CANCoderConstants.kFRCANCoderID,
-        CANCoderConstants.kFRCANCoderReversed, CANCoderConstants.kFREncoderOffset);
-    backLeft = new SwerveModule(SwerveDriveConstants.kBLDriveID, SwerveDriveConstants.kBLTurningID,
-        SwerveDriveConstants.kBLDriveReversed, SwerveDriveConstants.kBLTurningReversed,
-        CANCoderConstants.kBLCANCoderID, CANCoderConstants.kBLCANCoderReversed,
+    frontRight = new SwerveModule(
+        SwerveDriveConstants.kFRDriveID,
+        SwerveDriveConstants.kFRTurningID,
+        SwerveDriveConstants.kFRDriveReversed,
+        SwerveDriveConstants.kFRTurningReversed,
+        CANCoderConstants.kFRCANCoderID,
+        CANCoderConstants.kFRCANCoderReversed,
+        CANCoderConstants.kFREncoderOffset);
+    backLeft = new SwerveModule(
+        SwerveDriveConstants.kBLDriveID,
+        SwerveDriveConstants.kBLTurningID,
+        SwerveDriveConstants.kBLDriveReversed,
+        SwerveDriveConstants.kBLTurningReversed,
+        CANCoderConstants.kBLCANCoderID,
+        CANCoderConstants.kBLCANCoderReversed,
         CANCoderConstants.kBLEncoderOffset);
-    backRight = new SwerveModule(SwerveDriveConstants.kBRDriveID, SwerveDriveConstants.kBRTurningID,
-        SwerveDriveConstants.kBRDriveReversed, SwerveDriveConstants.kBRTurningReversed,
-        CANCoderConstants.kBRCANCoderID, CANCoderConstants.kBRCANCoderReversed,
+    backRight = new SwerveModule(
+        SwerveDriveConstants.kBRDriveID,
+        SwerveDriveConstants.kBRTurningID,
+        SwerveDriveConstants.kBRDriveReversed,
+        SwerveDriveConstants.kBRTurningReversed,
+        CANCoderConstants.kBRCANCoderID,
+        CANCoderConstants.kBRCANCoderReversed,
         CANCoderConstants.kBREncoderOffset);
 
     this.gyro = gyro;
     this.gyro.setYaw(0);
 
-    this.poseEstimator = new SwerveDrivePoseEstimator(SwerveDriveConstants.kDriveKinematics,
-        gyro.getRotation2d(), getModulePositions(), new Pose2d());
+    this.poseEstimator = new SwerveDrivePoseEstimator(
+        SwerveDriveConstants.kDriveKinematics,
+        gyro.getRotation2d(),
+        getModulePositions(),
+        new Pose2d());
 
     // this.odometer = new SwerveDriveOdometry(
     // kDriveKinematics,
@@ -130,7 +152,8 @@ public class SwerveDriveTrain extends SubsystemBase {
         this::resetOdometry,
         this::getChassisSpeeds,
         this::setChassisSpeeds,
-        new PPHolonomicDriveController(PathPlannerConstants.kPPTranslationPIDConstants,
+        new PPHolonomicDriveController(
+            PathPlannerConstants.kPPTranslationPIDConstants,
             PathPlannerConstants.kPPRotationPIDConstants),
         config,
         () -> {
@@ -147,6 +170,21 @@ public class SwerveDriveTrain extends SubsystemBase {
   public final void periodic() {
     runModules();
     poseEstimator.update(gyro.getRotation2d(), getModulePositions());
+
+    LimelightHelpers.SetRobotOrientation(
+        "limelight",
+        this.getDriveHeading().getDegrees(),
+        this.getChassisSpeeds().omegaRadiansPerSecond,
+        0,
+        0,
+        0,
+        0);
+
+    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    if (poseEstimate != null) {
+      // poseEstimator.setVisionMeasurementStdDevs(0.7, 0.7, 0.9);
+      poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+    }
     field.setRobotPose(poseEstimator.getEstimatedPosition());
 
     desiredStates[0] = frontLeft.getDesiredState();

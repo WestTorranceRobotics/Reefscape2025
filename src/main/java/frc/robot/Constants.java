@@ -84,11 +84,11 @@ public final class Constants {
     // Distance between front and back wheels
     public static final double kWheelBase = 0.635;
 
-    public static final SwerveDriveKinematics kDriveKinematics =
-        new SwerveDriveKinematics(new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, kTrackWidth / 2));
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(kWheelBase / 2, kTrackWidth / 2));
 
     public static final int kFRDriveID = 23;
     public static final int kFLDriveID = 24;
@@ -183,8 +183,11 @@ public final class Constants {
       public static final double kPPMaxAcceleration = 3;
       public static final double kPPMaxAngularVelocity = Math.PI * 2;
       public static final double kPPMaxAngularAcceleration = Math.PI * 2;
-      public static final PathConstraints kPPPathConstraints = new PathConstraints(kPPMaxVelocity,
-          kPPMaxAcceleration, kPPMaxAngularVelocity, kPPMaxAngularAcceleration);
+      public static final PathConstraints kPPPathConstraints = new PathConstraints(
+          kPPMaxVelocity,
+          kPPMaxAcceleration,
+          kPPMaxAngularVelocity,
+          kPPMaxAngularAcceleration);
 
       public static final double kPP_P = 0.01;
       public static final double kPP_I = 0;

@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "test_rotation"
+            "pathName": "Middle to reef"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "tests",
+  "folder": null,
   "choreoAuto": false
 }

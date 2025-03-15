@@ -14,8 +14,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,6 +31,8 @@ public class Intake extends SubsystemBase {
 
   private final DCMotor sim_gearbox;
   private final SparkMaxSim sim_intakeMotor;
+
+  private final FlywheelSim intakeSim;
 
   /**
    * The intake's gear ratio is 2:1. Ihe motor needs to turn twice for the intake to turn once.
@@ -49,8 +54,9 @@ public class Intake extends SubsystemBase {
     config.openLoopRampRate(0.2);
     config.inverted(inverted);
 
-    config.closedLoop.maxMotion.allowedClosedLoopError(0.2);
-    config.closedLoop.pidf(0.001, 0, 0, 1);
+    // config.closedLoop.maxMotion.allowedClosedLoopError(5);
+    config.closedLoop.smartMotion.allowedClosedLoopError(5);
+    config.closedLoop.pidf(0.01, 0, 0, 1);
 
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     targetRpm = 0;
@@ -58,6 +64,9 @@ public class Intake extends SubsystemBase {
     // SIMULATION CONFIG
     sim_gearbox = DCMotor.getNEO(1);
     sim_intakeMotor = new SparkMaxSim(intakeMotor, sim_gearbox);
+
+    intakeSim =
+        new FlywheelSim(LinearSystemId.createFlywheelSystem(sim_gearbox, 1, 2), sim_gearbox);
   }
 
   /**
@@ -68,7 +77,7 @@ public class Intake extends SubsystemBase {
   public void setIntakeSpeed(double rpm) {
     targetRpm = rpm * kGearRatio;
     intakeMotor.getClosedLoopController()
-        .setReference(targetRpm, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+        .setReference(targetRpm, ControlType.kSmartVelocity, ClosedLoopSlot.kSlot0);
   }
 
   /**
@@ -140,7 +149,16 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     if (Robot.isSimulation()) {
-      sim_intakeMotor.iterate(targetRpm / 60, RoboRioSim.getVInVoltage(), 0.02);
+      intakeSim.setInput(sim_intakeMotor.getAppliedOutput() * RoboRioSim.getVInVoltage());
+      intakeSim.update(0.02);
+
+      sim_intakeMotor.iterate(
+          intakeSim.getAngularVelocity().in(Units.RevolutionsPerSecond) * 60, // Revolutions per
+                                                                              // minute
+          RoboRioSim.getVInVoltage(),
+          0.02);
+
+
     }
   }
 }

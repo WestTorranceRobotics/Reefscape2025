@@ -99,10 +99,12 @@ public class SwerveModule {
 
     this.desiredState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
 
-    this.sim_driveMotor = new DCMotorSim(LinearSystemId.createDCMotorSystem(
-        DCMotor.getFalcon500Foc(1),
-        0.001,
-        ModuleConstants.kDriveMotorGearRatio), DCMotor.getFalcon500Foc(1));
+    this.sim_driveMotor = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(
+            DCMotor.getFalcon500Foc(1),
+            0.001,
+            ModuleConstants.kDriveMotorGearRatio),
+        DCMotor.getFalcon500Foc(1));
 
     this.driveConfigurator = driveMotor.getConfigurator();
     this.driveRequest = new DutyCycleOut(0);
@@ -133,13 +135,16 @@ public class SwerveModule {
 
     sparkConfig.smartCurrentLimit(50).idleMode(IdleMode.kBrake).openLoopRampRate(0.2)
         .inverted(invertTurningMotor);
+
     turnMotor
         .configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     this.brakeRequest = new NeutralOut();
 
     /* TURN PID CONFIGS */
-    this.turnPIDController = new PIDController(ModuleConstants.kPTurning, ModuleConstants.kITurning,
+    this.turnPIDController = new PIDController(
+        ModuleConstants.kPTurning,
+        ModuleConstants.kITurning,
         ModuleConstants.kDTurning);
 
     turnPIDController.enableContinuousInput(0, 360); // Originally was -pi to pi
