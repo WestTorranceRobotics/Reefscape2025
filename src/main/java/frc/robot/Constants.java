@@ -89,6 +89,18 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, kTrackWidth / 2));
+    // back right --> back left --> front right --> front left.
+    // lowk maybe flip these?
+    // BR BL
+    // FR FL
+
+    // public static final SwerveDriveKinematics kDrivekinematics = new SwerveDriveKinematics(
+    // new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+    // new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+    // new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+    // new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+    // FL FR
+    // BL BR
 
     public static final int kFRDriveID = 23;
     public static final int kFLDriveID = 24;

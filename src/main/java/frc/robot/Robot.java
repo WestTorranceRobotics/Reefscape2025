@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Intake;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -20,6 +21,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer mrobotContainer;
 
   private Pigeon2 gyro;
+  private Intake intake;
 
 
   /**
@@ -31,8 +33,9 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     this.gyro = new Pigeon2(9);
+    this.intake = new Intake(true);
 
-    mrobotContainer = new RobotContainer(this.gyro);
+    mrobotContainer = new RobotContainer(this.gyro, this.intake);
   }
 
   /**
@@ -88,6 +91,8 @@ public class Robot extends TimedRobot {
     if (mAutonomousCommand != null) {
       mAutonomousCommand.cancel();
     }
+
+    intake.idle();
 
     // Only for compeition with "Main auto". Since the default auto starts and ends the robot
     // at 180 deg, we set the gyro to that to compensate

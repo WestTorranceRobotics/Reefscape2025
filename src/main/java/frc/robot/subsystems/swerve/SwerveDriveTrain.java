@@ -140,7 +140,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      // Handle exception as needed
       e.printStackTrace();
       config = null;
     }
@@ -171,20 +170,21 @@ public class SwerveDriveTrain extends SubsystemBase {
     runModules();
     poseEstimator.update(gyro.getRotation2d(), getModulePositions());
 
-    LimelightHelpers.SetRobotOrientation(
-        "limelight",
-        this.getDriveHeading().getDegrees(),
-        this.getChassisSpeeds().omegaRadiansPerSecond,
-        0,
-        0,
-        0,
-        0);
+    // LimelightHelpers.SetRobotOrientation(
+    // "limelight",
+    // this.getDriveHeading().getDegrees(),
+    // this.getChassisSpeeds().omegaRadiansPerSecond,
+    // 0,
+    // 0,
+    // 0,
+    // 0);
 
-    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-    if (poseEstimate != null) {
-      // poseEstimator.setVisionMeasurementStdDevs(0.7, 0.7, 0.9);
-      poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
-    }
+    // PoseEstimate poseEstimate =
+    // LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    // if (poseEstimate != null) {
+    // poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+    // }
+
     field.setRobotPose(poseEstimator.getEstimatedPosition());
 
     desiredStates[0] = frontLeft.getDesiredState();

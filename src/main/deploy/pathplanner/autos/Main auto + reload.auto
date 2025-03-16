@@ -27,6 +27,18 @@
           "data": {
             "waitTime": 3.0
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom intake to reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunIntakeAuto"
+          }
         }
       ]
     }

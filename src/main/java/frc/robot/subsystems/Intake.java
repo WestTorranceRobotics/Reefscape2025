@@ -89,13 +89,19 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
+
   /**
-   * Sets speed of intake to zero.
+   * Idles intake at 2% power.
+   */
+  public void idle() {
+    intakeMotor.set(0.02);
+  }
+
+  /**
+   * Sets intake speed to zero.
    */
   public void stop() {
     targetRpm = 0;
-    // intakeMotor.getClosedLoopController().setReference(targetVelocity,
-    // ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
     intakeMotor.set(0);
   }
 
@@ -115,7 +121,7 @@ public class Intake extends SubsystemBase {
    * Directly sets the intake motor's speed to a percentage, from 1.0 to -1.0.
    * 
    * @param speed A percentage from 1.0 to -1.0.
-   * @return An instant command setting the speed.
+   * @return An instantly finishing command setting the speed.
    */
   public Command c_directSetIntakeSpeedCommand(double speed) {
     return Commands.runOnce(() -> {
@@ -123,6 +129,18 @@ public class Intake extends SubsystemBase {
     }, this);
   }
 
+  /**
+   * Idles intake at 2% power.
+   */
+  public Command c_idleCommand() {
+    return Commands.runOnce(() -> {
+      idle();
+    }, this);
+  }
+
+  /**
+   * Sets intake speed to zero.
+   */
   public Command c_stopCommand() {
     return Commands.runOnce(() -> {
       stop();
@@ -153,12 +171,9 @@ public class Intake extends SubsystemBase {
       intakeSim.update(0.02);
 
       sim_intakeMotor.iterate(
-          intakeSim.getAngularVelocity().in(Units.RevolutionsPerSecond) * 60, // Revolutions per
-                                                                              // minute
+          intakeSim.getAngularVelocity().in(Units.RevolutionsPerSecond) * 60, // rpm
           RoboRioSim.getVInVoltage(),
           0.02);
-
-
     }
   }
 }

@@ -27,8 +27,8 @@ public class RobotContainer {
   CommandPS4Controller driveController = new CommandPS4Controller(0);
 
   private SwerveDriveTrain swerveSubsystem;
-  private Intake intake;
   private Pigeon2 gyro;
+  private Intake intake;
 
   private Command runIntakeAuto;
   private final SendableChooser<Command> autoChooser;
@@ -36,15 +36,15 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer(Pigeon2 gyro) {
+  public RobotContainer(Pigeon2 gyro, Intake intake) {
     this.swerveSubsystem = new SwerveDriveTrain(gyro);
-    this.intake = new Intake(true);
+    this.intake = intake;
     this.gyro = gyro;
 
     this.runIntakeAuto = Commands.sequence(
         intake.c_directSetIntakeSpeedCommand(0.2),
         Commands.waitSeconds(1),
-        intake.c_stopCommand());
+        intake.c_idleCommand());
 
     NamedCommands.registerCommand("RunIntakeAuto", runIntakeAuto);
 
@@ -63,22 +63,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // circle -- Outtake fast
-    driveController.circle().onTrue(intake.c_directSetIntakeSpeedCommand(0.185));
-    driveController.circle().onFalse(intake.c_stopCommand());
-
-    // cross -- Outtake slow
-    driveController.cross().onTrue(intake.c_directSetIntakeSpeedCommand(0.16));
-    driveController.cross().onFalse(intake.c_stopCommand());
-
     // Reset gyro
     driveController.L1().onTrue(Commands.runOnce(() -> {
       gyro.setYaw(0);
     }));
 
+    // circle -- Outtake fast
+    driveController.circle().onTrue(intake.c_directSetIntakeSpeedCommand(0.185));
+    driveController.circle().onFalse(intake.c_idleCommand());
+
+    // cross -- Outtake slow
+    driveController.cross().onTrue(intake.c_directSetIntakeSpeedCommand(0.16));
+    driveController.cross().onFalse(intake.c_idleCommand());
+
     // Run intake backwards to unwedge coral
-    driveController.R1().onTrue(intake.c_directSetIntakeSpeedCommand(-0.5));
-    driveController.R1().onFalse(intake.c_stopCommand());
+    driveController.R1().onTrue(intake.c_directSetIntakeSpeedCommand(-0.2));
+    driveController.R1().onFalse(intake.c_idleCommand());
   }
 
   /**
@@ -96,6 +96,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return new PathPlannerAuto("Main auto");
   }
 }

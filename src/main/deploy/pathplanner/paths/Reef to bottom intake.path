@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.55030737704918,
-        "y": 4.150870901639344
+        "y": 4.066956967213113
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.55030737704918,
-        "y": 4.150870901639344
+        "y": 4.066956967213113
       },
       "isLocked": false,
       "linkedName": "ReefMiddleRight"
